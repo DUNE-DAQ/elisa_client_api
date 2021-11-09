@@ -1,0 +1,7 @@
+How to build the documentation
+
+1) cd DAQ/online/elisa_client_api/python
+2) Temporarily comment out in elisa.py
+  #from core.restServer import RestServer
+  #from core.authentication import Authentication
+3) sphinx-build -b html -d doctrees . html
