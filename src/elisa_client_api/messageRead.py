@@ -17,8 +17,7 @@
 # 27/Nov/2012: created.
 #--------------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-from elisa_client_api.core.message import Message
+from .message import Message
 
 
 class MessageRead(Message):

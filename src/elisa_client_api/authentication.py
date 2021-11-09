@@ -18,11 +18,7 @@
 # 18/Dec/2012: created.
 #--------------------------------------------------------------------------------------
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import object
-from elisa_client_api.exception import ArgumentError
+from .exception import ArgumentError
 
 
 class Authentication(object):

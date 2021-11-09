@@ -20,18 +20,13 @@
 # 11/Feb/2013: add option to show attributes when searching for messages.
 #--------------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import object
 import urllib.request, urllib.parse, urllib.error
 import string
 import logging
 
 from .request import Request
 from .serializer import Serializer
-from elisa_client_api.exception import RestServerError
+from .exception import RestServerError
 
 
 class RestServer(object):

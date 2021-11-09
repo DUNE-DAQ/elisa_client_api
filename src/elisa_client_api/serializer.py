@@ -19,12 +19,11 @@
 # 04/Feb/2013: bug in deserializeMessageTypeOptions()
 #--------------------------------------------------------------------------------------
 
-from builtins import object
 import xml.etree.ElementTree as ET
 import string
 import logging
 
-from elisa_client_api.messageRead import MessageRead
+from .messageRead import MessageRead
 
 
 class FormatterError(Exception):

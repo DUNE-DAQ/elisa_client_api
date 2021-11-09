@@ -17,11 +17,6 @@
 # 05/Dec/2012: created.
 #--------------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-from builtins import str
-from builtins import object
-import string
-
 from .messageField import SimpleField, AttachmentField, SystemsAffectedField, OptionField
 
 class Status(object):
