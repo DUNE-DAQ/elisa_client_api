@@ -19,15 +19,11 @@
 # 04/Feb/2013: attachmentsDst instead of attachPath.
 #--------------------------------------------------------------------------------------
 
-# from __future__ import print_function
-# from __future__ import absolute_import
-# from builtins import str
 import logging
 
 from .exception import *
 from .elisa import Elisa
 from .elisa_utilhelper import *
-# parseCredentials, getLoggingLevel, buildCommandLineArguments
 
 
 __elisaUtilName__ = 'elisa_get'

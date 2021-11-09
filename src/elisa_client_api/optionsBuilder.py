@@ -19,8 +19,6 @@
 # 13/Dec/2012: created.
 #--------------------------------------------------------------------------------------
 
-from builtins import str
-from builtins import object
 class OptionsBuilder(object):
     """ Class providing functionality to build the options fields.
     """

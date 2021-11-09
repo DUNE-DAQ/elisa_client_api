@@ -18,15 +18,12 @@
 # 24/Jan/2013: created.
 #--------------------------------------------------------------------------------------
 
-from __future__ import print_function
-from __future__ import absolute_import
-from builtins import str
 import logging
 
-from elisa_client_api.exception import *
-from elisa_client_api.elisa import Elisa
-from elisa_client_api.messageReply import MessageReply
-import elisa_utilhelper as euh
+from .exception import *
+from .elisa import Elisa
+from .messageReply import MessageReply
+from .elisa_utilhelper import *
 
 
 __elisaUtilName__ = 'elisa_reply'
@@ -35,14 +32,14 @@ __version__ = '.'.join(__version_info__)
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
         
-if __name__ == '__main__':
+def main():
     # Command line arguments
     availableArgs = ['version', 'verbosity', 'server', 'sso',
                     'ldap', 'logbook', 'id', 'author', 'systems', 
                     'options', 'body', 'bodyFile',
                     'status', 'attachmentsSrc']
     mandatoryArgs = ['id']
-    parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
+    parser, cmdlArgs = buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
         
     if True == cmdlArgs.version:
         print('\n' + __elisaUtilName__ + ' ' +  __version__ + ' (' + __author__ + ')\n')
@@ -51,7 +48,7 @@ if __name__ == '__main__':
     # Configure the logging module
     logger = logging.getLogger('elisa')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
-    logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
+    logger.setLevel(getLoggingLevel(cmdlArgs.verbosity))
     
     # Make sure at least one option is defined
     if not cmdlArgs.author and not cmdlArgs.systems and not cmdlArgs.options and \
@@ -72,17 +69,17 @@ if __name__ == '__main__':
 
     logbook = cmdlArgs.logbook
     if None == logbook:
-        logbook = "ATLAS"
+        logbook = "np-vd-coldbox-elog"
 
     elisaArgs = dict()
-    elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'
-    elisaArgs.update(euh.parseCredentials(cmdlArgs))
+    elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL() + logbook + '/'
+    elisaArgs.update(parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
 
     message = MessageReply(cmdlArgs.id)
     message.author = cmdlArgs.author
     message.systemsAffected = [sys.strip() for sys in cmdlArgs.systems.split(',')] if cmdlArgs.systems else None
-    message.options = euh.parseOptions(cmdlArgs.options, parser)
+    message.options = parseOptions(cmdlArgs.options, parser)
     message.body = msgBody
     message.status = cmdlArgs.status
     message.attachments = cmdlArgs.attachmentsSrc
@@ -94,3 +91,5 @@ if __name__ == '__main__':
         logger.error(str(ex))
 
 
+if __name__ == '__main__':
+    main()
