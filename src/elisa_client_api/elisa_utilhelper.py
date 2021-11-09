@@ -26,29 +26,8 @@ def parseCredentials(cmlArgs):
     if None != cmlArgs.sso:
         args['ssocookie'] = cmlArgs.sso
         return args
-    
-    username = None
-    password = None
-    # If no authentication credentials have been defined, get the user name
-    # from the environment and ask for the password. If credentials have been
-    # specified, check if the password is also defined.
-    if None == cmlArgs.ldap:
-        import getpass
-        username = getpass.getuser()
-        password = getpass.getpass("Password for " + username + ": ")        
-    else:
-        pos = cmlArgs.ldap.find(':')
-        if pos != -1:
-            username = cmlArgs.ldap[:pos]
-            password = cmlArgs.ldap[pos+1:]
-        else:
-            import getpass
-            username = cmlArgs.ldap
-            password = getpass.getpass("Password for " + username + ": ")
-        
-    args['username'] = username
-    args['password'] = password
-    
+    import os
+    args['ssocookie'] = os.path.expanduser("~/.ssocookie.txt")
     return args
 
 
