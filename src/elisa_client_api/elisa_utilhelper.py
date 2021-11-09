@@ -248,7 +248,7 @@ def getElisaServer(cmdlServer):
  
 def getElisaURL():
     import os
-    if None != os.environ.get('USE_ELISA_MERGED'):
+    if None == os.environ.get('DONT_USE_ELISA_MERGED'):
         return '/elisa/api/'
     else:
         return '/elisa.api/api/'
