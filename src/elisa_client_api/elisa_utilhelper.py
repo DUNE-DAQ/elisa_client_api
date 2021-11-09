@@ -243,10 +243,8 @@ def getElisaServer(cmdlServer):
 
     if None != cmdlServer:
         return cmdlServer
-    elif None != os.environ.get('TDAQ_SETUP_POINT1'):
-        return 'http://pc-atlas-www.cern.ch'
     else:
-        return 'https://atlasop.cern.ch'
+        return 'https://np-vd-coldbox-elog.cern.ch'
  
 def getElisaURL():
     import os
