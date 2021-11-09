@@ -81,7 +81,7 @@ def main():
 
     logbook = cmdlArgs.logbook
     if None == logbook:
-        logbook = "ATLAS"
+        logbook = "np-vd-coldbox-elog"
 
     elisaArgs = dict()
     elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL() + logbook + '/'
