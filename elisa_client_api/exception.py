@@ -18,7 +18,6 @@
 # 18/Mar/2013: parse the Rest Server error.
 #--------------------------------------------------------------------------------------
 
-from builtins import str
 import sys
 
 

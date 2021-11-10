@@ -17,7 +17,6 @@
 # 07/Dec/2012: created.
 #--------------------------------------------------------------------------------------
 
-from builtins import object
 class SearchField(object):
     """ Class providing functionality to define a search criteria field.
     """

@@ -18,9 +18,6 @@
 # 21/Jan/2013: created.
 #--------------------------------------------------------------------------------------
 
-from __future__ import print_function
-from __future__ import absolute_import
-from builtins import str
 import logging
 import sys
 from elisa_client_api.exception import *
