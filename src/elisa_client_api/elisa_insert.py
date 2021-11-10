@@ -65,6 +65,7 @@ def main():
     elisaArgs = dict()
     elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL() + logbook + '/'
     elisaArgs.update(parseCredentials(cmdlArgs))
+    print(elisaArgs)
     elisa = Elisa(**elisaArgs)
     
     message = MessageInsert()
@@ -76,9 +77,11 @@ def main():
     message.body = msgBody
     message.status = cmdlArgs.status
     message.attachments = cmdlArgs.attachmentsSrc
-    logger.debug('\n' + str(message)) 
+    logger.debug('\n' + str(message))
+    print(str(message))
     try:
         msgRead = elisa.insertMessage(message)
+        print(str(msgRead))
         logger.debug('\n' + str(msgRead))
     except ElisaError as ex:
         logger.error(str(ex))

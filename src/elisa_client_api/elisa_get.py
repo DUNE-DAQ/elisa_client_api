@@ -82,6 +82,7 @@ def main():
     elisaArgs = dict()
     elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL() + logbook + '/'
     elisaArgs.update(parseCredentials(cmdlArgs))
+    print(elisaArgs)
     elisa = Elisa(**elisaArgs)
 
     if None != cmdlArgs.id:
