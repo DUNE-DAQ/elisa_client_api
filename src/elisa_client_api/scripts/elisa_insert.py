@@ -61,8 +61,6 @@ def main():
             msgBody = f.read()
 
     logbook = cmdlArgs.logbook
-    if None == logbook:
-        logbook = "ATLAS"
 
     elisaArgs = dict()
     elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'

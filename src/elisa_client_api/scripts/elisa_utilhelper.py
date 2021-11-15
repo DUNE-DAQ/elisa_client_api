@@ -58,8 +58,7 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
     usage = 'usage: ' + utilName + ' [options] args'
     parser = OptionParser(usage=usage,
                           epilog='In case of errors or bugs, please send an email to ' \
-                          'atlas-tdaq-cc-wg@cern.ch')
-
+                          '')
 
     for arg in cmlArgs:
         addOption = {
@@ -79,10 +78,7 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
                                                 type='string',
                                                 dest='server',
                                                 metavar='SERVER',
-                                                default=getElisaServer(None),
-                                                help='URL of the EliSA REST server (i.e. ' \
-                                                'https://pc-atd-elisa.cern.ch). If not specified, the main' \
-                                                'EliSA server in P1 or GPN depending on user location.'),
+                                                help='URL of the EliSA REST server (i.e. https://pc-atd-elisa.cern.ch).'),
             'sso': lambda: parser.add_option('-o', '--sso-credential',
                                                 type='string',
                                                 dest='sso',
@@ -97,9 +93,9 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
                                                 help='user credential in the form USERNAME:PASSWORD or USERNAME. If only ' \
                                                 'the username is provided, the password will be asked interactively.'),
             'logbook': lambda: parser.add_option('-k', '--logbook',
-                                                type='string',
-                                                dest='logbook',
-                                                metavar='LOGBOOK',
+                                                 type='string',
+                                                 dest='logbook',
+                                                 metavar='LOGBOOK',
                                                  help='logbook name. If argument is not provided, this script won\'t work!'),
             'id': lambda: parser.add_option('-i', '--id',
                                                 type='int',
@@ -238,10 +234,9 @@ def getLoggingLevel(level):
 
 
 def getElisaServer(cmdlServer):
-    import os
 
     if not cmdlServer:
-        raise RuntimeError("You need to specify a logbook")
+        raise RuntimeError("You need to specify a server")
     else:
         return cmdlServer
 

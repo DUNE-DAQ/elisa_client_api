@@ -77,8 +77,6 @@ def main():
             sys.exit()
 
     logbook = cmdlArgs.logbook
-    if None == logbook:
-        logbook = "ATLAS"
 
     elisaArgs = dict()
     elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'

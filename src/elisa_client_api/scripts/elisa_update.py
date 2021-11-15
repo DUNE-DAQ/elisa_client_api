@@ -32,7 +32,7 @@ __version__ = '.'.join(__version_info__)
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
 
-def main()
+def main():
     # Command line arguments
     availableArgs = ['version', 'verbosity', 'server', 'sso',
                     'ldap', 'logbook', 'id', 'date', 'body', 'bodyFile',
@@ -65,8 +65,6 @@ def main()
             msgBody = f.read()
 
     logbook = cmdlArgs.logbook
-    if None == logbook:
-        logbook = "ATLAS"
 
     elisaArgs = dict()
     elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'
