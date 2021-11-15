@@ -17,7 +17,6 @@
 # 18/Dec/2012: created.
 #--------------------------------------------------------------------------------------
 
-from builtins import str
 import unittest
 import logging 
 

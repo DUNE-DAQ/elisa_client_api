@@ -19,9 +19,6 @@
 # 23/Jan/2013: use UTF8 for the name and value of the message fields.
 #--------------------------------------------------------------------------------------
 
-from builtins import str
-from past.builtins import basestring
-from builtins import object
 import xml.etree.ElementTree as ET
 
 
@@ -163,7 +160,7 @@ class AttachmentField(object):
         dump = '{0:19}: {1}'.format(self.name.decode('utf-8'), len(self.value))
         # Message insertion encapsulates attachments as a list of strings.
         # Message retrieval encapsulates attachments as a list of tuples.
-        if isinstance(self.value[0], basestring):
+        if isinstance(self.value[0], str):
             for attach in self.value:
                 dump += '\n    |---- {0}'.format(attach)
         else:

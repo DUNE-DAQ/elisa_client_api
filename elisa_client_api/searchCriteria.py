@@ -19,9 +19,6 @@
 # 04/Dec/2012: use properties.
 #--------------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-from builtins import str
-from builtins import object
 from elisa_client_api.core.searchField import SearchField
 
 

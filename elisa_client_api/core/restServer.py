@@ -20,12 +20,9 @@
 # 11/Feb/2013: add option to show attributes when searching for messages.
 #--------------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import object
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import string
 import logging
 
