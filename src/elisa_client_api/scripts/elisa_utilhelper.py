@@ -100,7 +100,7 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
                                                 type='string',
                                                 dest='logbook',
                                                 metavar='LOGBOOK',
-                                                help='logbook name. If argument is not provided, this script won\'t work!')
+                                                 help='logbook name. If argument is not provided, this script won\'t work!'),
             'id': lambda: parser.add_option('-i', '--id',
                                                 type='int',
                                                 dest='id',
