@@ -8,7 +8,7 @@
 # Created       : 04/Feb/2013
 # Revision      : 0 $
 #--------------------------------------------------------------------------------------
-# Class         : 
+# Class         :
 # Description   : Command line utility to retrieve the Elisa configuration.
 #--------------------------------------------------------------------------------------
 # Copyright (c) 2013 by University of California, Irvine. All rights reserved.
@@ -30,9 +30,9 @@ __version__ = '.'.join(__version_info__)
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
 
-if __name__ == '__main__':
+def main():
     # Command line arguments
-    availableOpts = ['version', 'verbosity', 'server', 'sso', 
+    availableOpts = ['version', 'verbosity', 'server', 'sso',
                     'ldap', 'type']
     mandatoryArgs = []
     parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableOpts, mandatoryArgs)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL()
     elisaArgs.update(euh.parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
-    
+
     try:
         if cmdlArgs.type:
             print("\nValid options for " + cmdlArgs.type + ":")
@@ -67,14 +67,18 @@ if __name__ == '__main__':
                     print("      Name:            " + innerOpt['name'])
                     print("      Type:            " + innerOpt['type'])
                     print("      Possible values: " + innerOpt['possible_values'])
-                    print("      Comment:         " + innerOpt['comment'])                    
+                    print("      Comment:         " + innerOpt['comment'])
         else:
             print("\nList of possible types:")
             print(elisa.getMessageType())
-        
+
         print(("\nValid systems affected for " + cmdlArgs.type + ":") if cmdlArgs.type else "\nList of possible systems affected:")
         print(elisa.getSystemsAffected(cmdlArgs.type))
-        
+
         print("\n")
     except ElisaError as ex:
         logger.error(str(ex))
+
+
+if __name__ == '__main__':
+    main()

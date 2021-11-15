@@ -8,9 +8,9 @@
 # Created       : 14/Jan/2013
 # Revision      : 0 $
 #--------------------------------------------------------------------------------------
-# Class         : 
-# Description   : Command line utility to retrieve messages based on an ID 
-#                 or search criteria from the Elisa back-end. 
+# Class         :
+# Description   : Command line utility to retrieve messages based on an ID
+#                 or search criteria from the Elisa back-end.
 #--------------------------------------------------------------------------------------
 # Copyright (c) 2013 by University of California, Irvine. All rights reserved.
 #--------------------------------------------------------------------------------------
@@ -40,19 +40,20 @@ def writeAttachments(elisa, message, path):
             with open(filename, "w") as outfile:
                 outfile.write(attachment[2])
                 logger.debug('Attachment ' + attachment[1] + ' stored in ' + path)
-            
+
     except IOError as ex:
         logger.error(str(ex))
     except ElisaError as ex:
         logger.error(str(ex))
 
 
-if __name__ == '__main__':
+
+def main()
     # Command line arguments
-    availableArgs = ['version', 'verbosity', 'server', 'sso', 
-                    'ldap', 'logbook', 'id', 'username','author', 'subject',  
-                    'type', 'systems', 'options', 'body',  
-                    'status', 'since', 'to',  'attributes', 
+    availableArgs = ['version', 'verbosity', 'server', 'sso',
+                    'ldap', 'logbook', 'id', 'username','author', 'subject',
+                    'type', 'systems', 'options', 'body',
+                    'status', 'since', 'to',  'attributes',
                     'interval', 'limit', 'attachmentsDst']
     mandatoryArgs = []
     parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
@@ -65,16 +66,16 @@ if __name__ == '__main__':
     logger = logging.getLogger('elisa_get_logger')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
     logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
-        
+
     # Make sure the interval argument is correctly entered
-    # At the moment only months are accepted so the format 
+    # At the moment only months are accepted so the format
     # should be NNm
     interval = cmdlArgs.interval[:-1] if cmdlArgs.interval else None
     if interval != None:
         if not interval.isdigit():
             parser.error("invalid value format of option --interval")
-            sys.exit() 
-    
+            sys.exit()
+
     logbook = cmdlArgs.logbook
     if None == logbook:
         logbook = "ATLAS"
@@ -83,7 +84,7 @@ if __name__ == '__main__':
     elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'
     elisaArgs.update(euh.parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
-    
+
     if None != cmdlArgs.id:
         try:
             message = elisa.getMessage(cmdlArgs.id)
@@ -109,7 +110,7 @@ if __name__ == '__main__':
         criteria.limit = cmdlArgs.limit
 
         logger.debug("Search criteria:\n" + str(criteria))
-        
+
         try:
             messages = elisa.searchMessages(criteria, cmdlArgs.attributes)
             # Dump all the messages and retrieve the attachments if need be.
@@ -119,4 +120,7 @@ if __name__ == '__main__':
                 if None != cmdlArgs.attachmentsDst and 0 != message.hasAttachments:
                     writeAttachments(elisa, message, cmdlArgs.attachmentsDst)
         except ElisaError as ex:
-            logger.error(str(ex)) 
+            logger.error(str(ex))
+
+if __name__ == '__main__':
+    main()

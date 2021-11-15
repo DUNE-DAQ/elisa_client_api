@@ -8,9 +8,9 @@
 # Created       : 24/Jan/2013
 # Revision      : 0 $
 #--------------------------------------------------------------------------------------
-# Class         : 
-# Description   : Command line utility to reply an elog message to the Elisa  
-#                 back-end database. 
+# Class         :
+# Description   : Command line utility to reply an elog message to the Elisa
+#                 back-end database.
 #--------------------------------------------------------------------------------------
 # Copyright (c) 2013 by University of California, Irvine. All rights reserved.
 #--------------------------------------------------------------------------------------
@@ -31,16 +31,16 @@ __version_info__ = ('0', '0', '1')
 __version__ = '.'.join(__version_info__)
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
-        
-if __name__ == '__main__':
+
+def main()
     # Command line arguments
     availableArgs = ['version', 'verbosity', 'server', 'sso',
-                    'ldap', 'logbook', 'id', 'author', 'systems', 
+                    'ldap', 'logbook', 'id', 'author', 'systems',
                     'options', 'body', 'bodyFile',
                     'status', 'attachmentsSrc']
     mandatoryArgs = ['id']
     parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
-        
+
     if True == cmdlArgs.version:
         print('\n' + __elisaUtilName__ + ' ' +  __version__ + ' (' + __author__ + ')\n')
         sys.exit()
@@ -49,19 +49,19 @@ if __name__ == '__main__':
     logger = logging.getLogger('elisa')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
     logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
-    
+
     # Make sure at least one option is defined
     if not cmdlArgs.author and not cmdlArgs.systems and not cmdlArgs.options and \
        not cmdlArgs.body and not cmdlArgs.bodyFile and not cmdlArgs.attachmentsSrc and \
        not cmdlArgs.status:
         parser.error('why reply with an empty e-log?')
-        sys.exit() 
-    
+        sys.exit()
+
     # Body text can only come from one source
     if cmdlArgs.body and cmdlArgs.bodyFile:
         parser.error('--body and --body-file are mutually exclusive')
         sys.exit()
-        
+
     msgBody = cmdlArgs.body
     if None != cmdlArgs.bodyFile:
         with open(cmdlArgs.bodyFile) as f:
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     message.body = msgBody
     message.status = cmdlArgs.status
     message.attachments = cmdlArgs.attachmentsSrc
-    logger.debug('\n' + str(message)) 
+    logger.debug('\n' + str(message))
     try:
         msgRead = elisa.replyToMessage(message)
         logger.debug('\n' + str(msgRead))
@@ -91,3 +91,5 @@ if __name__ == '__main__':
         logger.error(str(ex))
 
 
+if __name__ == '__main__':
+    main()

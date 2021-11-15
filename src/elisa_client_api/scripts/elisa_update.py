@@ -8,9 +8,9 @@
 # Created       : 24/Jan/2013
 # Revision      : 0 $
 #--------------------------------------------------------------------------------------
-# Class         : 
-# Description   : Command line utility to update an elog message to the Elisa  
-#                 back-end database. 
+# Class         :
+# Description   : Command line utility to update an elog message to the Elisa
+#                 back-end database.
 #--------------------------------------------------------------------------------------
 # Copyright (c) 2013 by University of California, Irvine. All rights reserved.
 #--------------------------------------------------------------------------------------
@@ -30,12 +30,12 @@ __elisaUtilName__ = 'elisa_update'
 __version_info__ = ('0', '0', '1')
 __version__ = '.'.join(__version_info__)
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
-    
 
-if __name__ == '__main__':
+
+def main()
     # Command line arguments
     availableArgs = ['version', 'verbosity', 'server', 'sso',
-                    'ldap', 'logbook', 'id', 'date', 'body', 'bodyFile', 
+                    'ldap', 'logbook', 'id', 'date', 'body', 'bodyFile',
                     'attachmentsSrc']
     mandatoryArgs = ['id']
     parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
@@ -48,17 +48,17 @@ if __name__ == '__main__':
     logger = logging.getLogger('elisa_get_logger')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
     logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
-    
+
     # Make sure at least one option is defined
     if not cmdlArgs.body and not cmdlArgs.attachmentsSrc and not cmdlArgs.bodyFile and not cmdlArgs.date:
         parser.error('why update an e-log without content?')
-        sys.exit()        
-    
+        sys.exit()
+
     # Body text can only come from one source
     if cmdlArgs.body and cmdlArgs.bodyFile:
         parser.error('--body and --body-file are mutually exclusive')
         sys.exit()
-                
+
     msgBody = cmdlArgs.body
     if None != cmdlArgs.bodyFile:
         with open(cmdlArgs.bodyFile) as f:
@@ -72,12 +72,12 @@ if __name__ == '__main__':
     elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'
     elisaArgs.update(euh.parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
-    
+
     message = MessageUpdate(str(cmdlArgs.id))
     message.body = msgBody
     message.attachments = cmdlArgs.attachmentsSrc
     message.date=cmdlArgs.date
-    logger.debug('\n' + str(message)) 
+    logger.debug('\n' + str(message))
     try:
         msgRead = elisa.updateMessage(message)
         logger.debug('\n' + str(msgRead))
@@ -85,3 +85,5 @@ if __name__ == '__main__':
         logger.error(str(ex))
 
 
+if __name__ == '__main__':
+    main()
