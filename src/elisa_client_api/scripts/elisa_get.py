@@ -48,7 +48,7 @@ def writeAttachments(elisa, message, path):
 
 
 
-def main()
+def main():
     # Command line arguments
     availableArgs = ['version', 'verbosity', 'server', 'sso',
                     'ldap', 'logbook', 'id', 'username','author', 'subject',
