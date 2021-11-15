@@ -23,7 +23,7 @@ import logging
 from elisa_client_api.exception import *
 from elisa_client_api.elisa import Elisa
 from elisa_client_api.messageUpdate import MessageUpdate
-import elisa_utilhelper as euh
+from elisa_client_api.scripts.elisa_utilhelper import *
 
 
 __elisaUtilName__ = 'elisa_update'
@@ -38,7 +38,7 @@ def main():
                     'ldap', 'logbook', 'id', 'date', 'body', 'bodyFile',
                     'attachmentsSrc']
     mandatoryArgs = ['id']
-    parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
+    parser, cmdlArgs = buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
 
     if True == cmdlArgs.version:
         print('\n' + __elisaUtilName__ + ' ' +  __version__ + ' (' + __author__ + ')\n')
@@ -47,7 +47,7 @@ def main():
     # Configure the logging module
     logger = logging.getLogger('elisa_get_logger')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
-    logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
+    logger.setLevel(getLoggingLevel(cmdlArgs.verbosity))
 
     # Make sure at least one option is defined
     if not cmdlArgs.body and not cmdlArgs.attachmentsSrc and not cmdlArgs.bodyFile and not cmdlArgs.date:
@@ -67,8 +67,8 @@ def main():
     logbook = cmdlArgs.logbook
 
     elisaArgs = dict()
-    elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'
-    elisaArgs.update(euh.parseCredentials(cmdlArgs))
+    elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL() + logbook + '/'
+    elisaArgs.update(parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
 
     message = MessageUpdate(str(cmdlArgs.id))

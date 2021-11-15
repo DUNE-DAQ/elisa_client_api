@@ -21,7 +21,7 @@ import logging
 
 from elisa_client_api.exception import *
 from elisa_client_api.elisa import Elisa
-import elisa_utilhelper as euh
+from elisa_client_api.scripts.elisa_utilhelper import *
 
 
 __elisaUtilName__ = 'elisa_config'
@@ -35,7 +35,7 @@ def main():
     availableOpts = ['version', 'verbosity', 'server', 'sso',
                     'ldap', 'type']
     mandatoryArgs = []
-    parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableOpts, mandatoryArgs)
+    parser, cmdlArgs = buildCommandLineArguments(__elisaUtilName__, availableOpts, mandatoryArgs)
 
     if True == cmdlArgs.version:
         print('\n' + __elisaUtilName__ + ' ' +  __version__ + ' (' + __author__ + ')\n')
@@ -44,11 +44,11 @@ def main():
     # Configure the logging module
     logger = logging.getLogger('elisa_get_logger')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
-    logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
+    logger.setLevel(getLoggingLevel(cmdlArgs.verbosity))
 
     elisaArgs = dict()
-    elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL()
-    elisaArgs.update(euh.parseCredentials(cmdlArgs))
+    elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL()
+    elisaArgs.update(parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
 
     try:
