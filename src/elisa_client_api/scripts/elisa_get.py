@@ -92,7 +92,7 @@ def main():
         except ElisaError as ex:
             logger.error(str(ex))
     else:
-        from searchCriteria import SearchCriteria
+        from elisa_client_api.searchCriteria import SearchCriteria
         criteria = SearchCriteria()
         criteria.userName = cmdlArgs.username
         criteria.author = cmdlArgs.author

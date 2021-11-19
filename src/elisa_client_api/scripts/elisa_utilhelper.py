@@ -34,9 +34,11 @@ def parseCredentials(cmlArgs):
     # specified, check if the password is also defined.
     if None == cmlArgs.ldap:
         import getpass
+        print("Using SSO authentication!")
         username = getpass.getuser()
         password = getpass.getpass("Password for " + username + ": ")
     else:
+        print("Using LDAP authentication!")
         pos = cmlArgs.ldap.find(':')
         if pos != -1:
             username = cmlArgs.ldap[:pos]
@@ -273,7 +275,7 @@ def parseOptions(options, parser):
 #    pp = pprint.PrettyPrinter(indent=2)
 #    pp.pprint(listOpts)
 
-    from optionsBuilder import OptionsBuilder
+    from elisa_client_api.optionsBuilder import OptionsBuilder
     obroot = OptionsBuilder()
 
     # Use a hash table with the option name as the key and the

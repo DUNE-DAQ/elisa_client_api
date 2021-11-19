@@ -178,7 +178,7 @@ class RestServer(object):
                  inserted into the database.
         Throws: RestServerError if accessing the logbook fails.
         """
-        from messageInsert import MessageInsert
+        from elisa_client_api.messageInsert import MessageInsert
         
         # The reply message must inherit from the original message the type, subject, 
         # and if need be, the options and systems affected.
