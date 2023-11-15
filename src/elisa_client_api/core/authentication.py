@@ -10,7 +10,7 @@
 #--------------------------------------------------------------------------------------
 # Class         : Authentication
 # Description   : Class providing the functionality to perform user authentication
-#                 either using LDAP or SSO. 
+#                 either using LDAP or SSO.
 #--------------------------------------------------------------------------------------
 # Copyright (c) 2012 by University of California, Irvine. All rights reserved.
 #--------------------------------------------------------------------------------------
@@ -22,20 +22,20 @@ from elisa_client_api.exception import ArgumentError
 
 
 class Authentication(object):
-    """ Interface to the ELisA logbook database. 
+    """ Interface to the ELisA logbook database.
     """
     def __init__(self, username=None, password=None, ssocookie=None):
         """ Constructor
-            
+
         username: user name.
-        password: password 
+        password: password
         type: authentication type; either 'ldap' or 'sso'.
         ssocookie: file with the sso-cookie created by auth-get-sso-cookie
         """
         self.__username = username
         self.__password = password
         self.__ssocookie = None
-        
+
         if ssocookie != None:
             try:
                 f = open(ssocookie)
@@ -43,13 +43,13 @@ class Authentication(object):
                 f.close()
             except IOError as ex:
                 raise ArgumentError("The cookie containing the sso authentication could not be read: " + str(ex))
-        
-            # Load the cookie 
+
+            # Load the cookie
             import http.cookiejar
             cj = http.cookiejar.MozillaCookieJar()
             cj.load(filename=ssocookie, ignore_discard=True, ignore_expires=True)
             for cookie in cj:
-                if True == cookie.name.startswith('_shibsession'):
+                if cookie.name.startswith('_shibsession'):
                     self.__ssocookie = cookie.name + '=' + cookie.value
 
     # ------------------
@@ -63,15 +63,24 @@ class Authentication(object):
         else:
             req.add_header("Authorization", "Basic %s" % self._getEncodedCredentials().decode())
 
-    def addAuthenticationPy3(self,req):
+    def addAuthenticationPy3(self, req):
         """ Adds the appropriate authentication header in the http request.
         """
         if self.__ssocookie != None:
             req.headers['Cookie'] = self.__ssocookie
         else:
             req.headers['Authorization'] = "Basic %s" % self._getEncodedCredentials().decode()
-            
-        
+
+    def addAuthenticationToDict(self, d):
+        """ Adds the appropriate authentication header in the http request.
+        """
+
+        if self.__ssocookie != None:
+            d['Cookie'] = self.__ssocookie
+        else:
+            d['Authorization'] = "Basic %s" % self._getEncodedCredentials().decode()
+
+
     # -------------------
     # - Private methods -
     # -------------------
