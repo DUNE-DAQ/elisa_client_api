@@ -28,9 +28,8 @@ from elisa_client_api.scripts.elisa_utilhelper import *
 
 
 __elisaUtilName__ = 'elisa_insert'
-__version_info__ = ('0', '0', '1')
-__version__ = '.'.join(__version_info__)
-__author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
+from . import __version__
+__author__ = 'Raul Murillo Garcia <rmurillo@cern.ch> & Pierre Lasorak <pierre.lasorak@cern.ch>'
 
 def main():
     # Command line arguments
