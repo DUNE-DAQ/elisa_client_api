@@ -2,3 +2,4 @@
 *.pyc
 cookie.txt
 *~
+src/elisa_client_api.egg-info
