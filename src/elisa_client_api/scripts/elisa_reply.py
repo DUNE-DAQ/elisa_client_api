@@ -27,7 +27,7 @@ from elisa_client_api.scripts.elisa_utilhelper import *
 
 
 __elisaUtilName__ = 'elisa_reply'
-from . import __version__
+from elisa_client_api import __version__
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch> & Pierre Lasorak <pierre.lasorak@cern.ch>'
 
 def main():
