@@ -1,0 +1,3 @@
+[submodule "elisa_client_api"]
+	path = elisa_client_api
+	url = https://gitlab.cern.ch/atlas-tdaq-software/elisa_client_api.git
