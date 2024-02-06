@@ -3,4 +3,5 @@ unittest
 urllib
 mimetypes
 xml
+lxml==5.1.0
 http
