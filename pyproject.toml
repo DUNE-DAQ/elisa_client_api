@@ -1,16 +1,14 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "elisa_client_api"
 version = "1.0.0"
-# url = "https://github.com/DUNE-DAQ/elisa_client_api"
-# long_description = file: docs/README.md
-# long_description_content_type = text/markdown
 
-[tool.setuptools.packages.find]
-where = ["elisa_client_api/python/src", "elisa_client_api/python/bin", "pymain"]
+[tool.setuptools]
+package-dirs = {elisa_client_api_main="pymain", elisa_client_api= "elisa_client_api/python/src", elisa_client_api_scripts= "elisa_client_api/python/bin"}
 
-# [tool.setuptools.package-dir]
-# elisa_client_api="elisa_client_api" # all the imports are bad without this.
-# elisa_client_api_main="pymain" # ... scripts that come without a main() function, that I had to redefine here manually...
 
 [project.scripts]
 elisa_config = "elisa_client_api.main:execute_elisa_config_script" # ... and refer to here.
