@@ -1,4 +1,4 @@
-#!/usr/bin/env tdaq_python
+#!/usr/bin/env python
 #--------------------------------------------------------------------------------------
 # Title         : XML formatter
 # Project       : ATLAS, TDAQ, ELisA

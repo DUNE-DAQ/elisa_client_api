@@ -1,4 +1,4 @@
-#!/usr/bin/env tdaq_python
+#!/usr/bin/env python
 #--------------------------------------------------------------------------------------
 # Title         : Utilities helper.
 # Project       : ATLAS, TDAQ, ELisA

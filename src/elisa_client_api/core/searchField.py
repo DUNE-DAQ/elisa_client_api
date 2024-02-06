@@ -1,4 +1,4 @@
-#!/usr/bin/env tdaq_python
+#!/usr/bin/env python
 #--------------------------------------------------------------------------------------
 # Title         : Search criteria field
 # Project       : ATLAS, TDAQ, ELisA

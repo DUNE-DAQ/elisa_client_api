@@ -1,4 +1,4 @@
-#!/usr/bin/env tdaq_python
+#!/usr/bin/env python
 #--------------------------------------------------------------------------------------
 # Title         : Logbook message options field builder
 # Project       : ATLAS, TDAQ, ELisA

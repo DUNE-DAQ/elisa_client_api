@@ -1,4 +1,4 @@
-#!/usr/bin/env tdaq_python
+#!/usr/bin/env python
 #--------------------------------------------------------------------------------------
 # Title         : Binary to reply an elog messages to Elisa.
 # Project       : ATLAS, TDAQ, ELisA

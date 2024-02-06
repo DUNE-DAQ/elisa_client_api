@@ -1,4 +1,4 @@
-#!/usr/bin/env tdaq_python
+#!/usr/bin/env python
 #--------------------------------------------------------------------------------------
 # Title         : Interface to the ELisA logbook database.
 # Project       : ATLAS, TDAQ, ELisA
