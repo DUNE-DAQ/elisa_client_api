@@ -30,12 +30,12 @@ import elisa_client_api.scripts.elisa_utilhelper as euh
 
 
 __elisaUtilName__ = 'elisa_get'
-__version_info__ = ('0', '0', '2')
+__version_info__ = ('1', '0', '0')
 __version__ = '.'.join(__version_info__)
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
 
-def writeAttachments(elisa, message, path):
+def writeAttachments(elisa, message, path, logger):
     try:
         attachments = elisa.getAttachments(message)
         for attachment in attachments:
@@ -92,7 +92,7 @@ def main():
             message = elisa.getMessage(cmdlArgs.id)
             print(message)
             if None != cmdlArgs.attachmentsDst and 0 != message.hasAttachments:
-                writeAttachments(elisa, message, cmdlArgs.attachmentsDst)
+                writeAttachments(elisa, message, cmdlArgs.attachmentsDst, logger)
         except ElisaError as ex:
             logger.error(str(ex))
     else:

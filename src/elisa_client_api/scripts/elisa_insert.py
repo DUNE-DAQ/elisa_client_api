@@ -30,7 +30,7 @@ import elisa_client_api.scripts.elisa_utilhelper as euh
 
 
 __elisaUtilName__ = 'elisa_insert'
-__version_info__ = ('0', '0', '1')
+__version_info__ = ('1', '0', '0')
 __version__ = '.'.join(__version_info__)
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 

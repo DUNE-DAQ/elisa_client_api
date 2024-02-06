@@ -24,17 +24,16 @@ import logging
 
 from elisa_client_api.exception import *
 from elisa_client_api.elisa import Elisa
-import elisa_utilhelper as euh
+import elisa_client_api.scripts.elisa_utilhelper as euh
 
 
 __elisaUtilName__ = 'elisa_config'
-__version_info__ = ('0', '0', '1')
+__version_info__ = ('1', '0', '0')
 __version__ = '.'.join(__version_info__)
 __author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
 
-if __name__ == '__main__':
-    # Command line arguments
+def main():    # Command line arguments
     availableOpts = ['version', 'verbosity', 'server', 'sso',
                     'ldap', 'type']
     mandatoryArgs = []

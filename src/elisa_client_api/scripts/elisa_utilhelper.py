@@ -112,7 +112,7 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
                                                 dest='username',
                                                 metavar='USER',
                                                 help='message user name'),
-	   'date': lambda: parser.add_option('-d', '--date',
+	        'date': lambda: parser.add_option('-d', '--date',
                                                 type='string',
                                                 dest='date',
                                                 metavar='DATE',
@@ -272,7 +272,7 @@ def parseOptions(options, parser):
         # 'option=' results in len=2 and pair[1]="". Check also for this condition.
         if len(pair) != 2 or not pair[1]:
             parser.error('invalid value format of argument --options')
-            sys.exit()
+            exit()
         listOpts.append((pair[0].strip(), pair[1].strip()))
 
     # Sort the option name (including the inner name)
