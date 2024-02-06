@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
 # Title         : Binary to retrieve messages from Elisa.
 # Project       : ATLAS, TDAQ, ELisA
@@ -19,16 +19,20 @@
 # 04/Feb/2013: attachmentsDst instead of attachPath.
 #--------------------------------------------------------------------------------------
 
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
 import logging
 
 from elisa_client_api.exception import *
 from elisa_client_api.elisa import Elisa
-from elisa_client_api.scripts.elisa_utilhelper import *
+import elisa_client_api.scripts.elisa_utilhelper as euh
 
 
 __elisaUtilName__ = 'elisa_get'
-from elisa_client_api import __version__
-__author__ = 'Raul Murillo Garcia <rmurillo@cern.ch> & Pierre Lasorak <pierre.lasorak@cern.ch>'
+__version_info__ = ('0', '0', '2')
+__version__ = '.'.join(__version_info__)
+__author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
 
 def writeAttachments(elisa, message, path):
@@ -46,7 +50,6 @@ def writeAttachments(elisa, message, path):
         logger.error(str(ex))
 
 
-
 def main():
     # Command line arguments
     availableArgs = ['version', 'verbosity', 'server', 'sso',
@@ -55,7 +58,7 @@ def main():
                     'status', 'since', 'to',  'attributes',
                     'interval', 'limit', 'attachmentsDst']
     mandatoryArgs = []
-    parser, cmdlArgs = buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
+    parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
 
     if True == cmdlArgs.version:
         print('\n' + __elisaUtilName__ + ' ' +  __version__ + ' (' + __author__ + ')\n')
@@ -64,7 +67,7 @@ def main():
     # Configure the logging module
     logger = logging.getLogger('elisa_get_logger')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
-    logger.setLevel(getLoggingLevel(cmdlArgs.verbosity))
+    logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
 
     # Make sure the interval argument is correctly entered
     # At the moment only months are accepted so the format
@@ -76,10 +79,12 @@ def main():
             sys.exit()
 
     logbook = cmdlArgs.logbook
+    if None == logbook:
+        logbook = "ATLAS"
 
     elisaArgs = dict()
-    elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL() + logbook + '/'
-    elisaArgs.update(parseCredentials(cmdlArgs))
+    elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'
+    elisaArgs.update(euh.parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
 
     if None != cmdlArgs.id:
@@ -91,7 +96,7 @@ def main():
         except ElisaError as ex:
             logger.error(str(ex))
     else:
-        from elisa_client_api.searchCriteria import SearchCriteria
+        from searchCriteria import SearchCriteria
         criteria = SearchCriteria()
         criteria.userName = cmdlArgs.username
         criteria.author = cmdlArgs.author
@@ -118,6 +123,3 @@ def main():
                     writeAttachments(elisa, message, cmdlArgs.attachmentsDst)
         except ElisaError as ex:
             logger.error(str(ex))
-
-if __name__ == '__main__':
-    main()

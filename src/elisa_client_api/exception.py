@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
-# Title         : Elisa exceptions 
+# Title         : Elisa exceptions
 # Project       : ATLAS, TDAQ, ELisA
 #--------------------------------------------------------------------------------------
 # File          : exception.py
@@ -9,7 +9,7 @@
 # Revision      : 0 $
 #--------------------------------------------------------------------------------------
 # Class         : ElisaError, ArgumentError
-# Description   : Class encapsulating errors that might be raised. 
+# Description   : Class encapsulating errors that might be raised.
 #--------------------------------------------------------------------------------------
 # Copyright (c) 2012 by University of California, Irvine. All rights reserved.
 #--------------------------------------------------------------------------------------
@@ -18,6 +18,7 @@
 # 18/Mar/2013: parse the Rest Server error.
 #--------------------------------------------------------------------------------------
 
+from builtins import str
 import sys
 
 
@@ -50,16 +51,16 @@ class ElisaError(Exception):
                  self.__reason += '[' + entry.attrib['key'] + ']->' + entry.text
                  if entry != entries[-1]:
                     self.__reason += ', '
-        else: 
+        else:
            self.__reason  = reason
 
         frame = sys._getframe(3)
         self.__operation = frame.f_code.co_filename + "[" + frame.f_code.co_name + "():" + str(frame.f_lineno) + ']'
 
-        
+
     def __str__(self):
         return "Exception raised at " + self.__operation + ". Reason: " + self.__reason + "."
-    
+
 
 class RestServerError(ElisaError):
     """ Exception thrown when an error occurs whilst accessing the rest server.
@@ -67,16 +68,16 @@ class RestServerError(ElisaError):
     def __init__(self, reason):
         super(RestServerError, self).__init__("access to the REST server failed. {0}".format(reason))
 
-    
+
 class ArgumentError(ElisaError):
     """ Exception thrown when an argument is wrongly passed to the API
     """
     def __init__(self, argument):
         super(ArgumentError, self).__init__("wrong argument. {0}".format(argument))
-    
+
 
 class FileError(ElisaError):
     """ Elisa exception thrown when an argument is wrongly passed to the API
     """
     pass
-           
+

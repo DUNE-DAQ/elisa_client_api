@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
 # Title         : ELisA authentication.
 # Project       : ATLAS, TDAQ, ELisA
@@ -18,6 +18,10 @@
 # 18/Dec/2012: created.
 #--------------------------------------------------------------------------------------
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 from elisa_client_api.exception import ArgumentError
 
 
@@ -49,7 +53,8 @@ class Authentication(object):
             cj = http.cookiejar.MozillaCookieJar()
             cj.load(filename=ssocookie, ignore_discard=True, ignore_expires=True)
             for cookie in cj:
-                if cookie.name.startswith('_shibsession'):
+               # if True == cookie.name.startswith('_shibsession'):
+               if cookie.name.startswith('_shibsession') or cookie.name == 'mod_auth_openidc_session':
                     self.__ssocookie = cookie.name + '=' + cookie.value
 
     # ------------------
@@ -63,22 +68,13 @@ class Authentication(object):
         else:
             req.add_header("Authorization", "Basic %s" % self._getEncodedCredentials().decode())
 
-    def addAuthenticationPy3(self, req):
+    def addAuthenticationPy3(self,req):
         """ Adds the appropriate authentication header in the http request.
         """
         if self.__ssocookie != None:
             req.headers['Cookie'] = self.__ssocookie
         else:
             req.headers['Authorization'] = "Basic %s" % self._getEncodedCredentials().decode()
-
-    def addAuthenticationToDict(self, d):
-        """ Adds the appropriate authentication header in the http request.
-        """
-
-        if self.__ssocookie != None:
-            d['Cookie'] = self.__ssocookie
-        else:
-            d['Authorization'] = "Basic %s" % self._getEncodedCredentials().decode()
 
 
     # -------------------
@@ -88,4 +84,4 @@ class Authentication(object):
         """ Encodes the string username:password with basic 64
         """
         import base64
-        return base64.encodestring(('%s:%s' % (self.__username, self.__password)).encode())[:-1]
+        return base64.encodebytes(('%s:%s' % (self.__username, self.__password)).encode())[:-1]

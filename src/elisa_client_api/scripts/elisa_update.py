@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
 # Title         : Binary to update an elog messages to Elisa.
 # Project       : ATLAS, TDAQ, ELisA
@@ -18,26 +18,30 @@
 # 24/Jan/2013: created.
 #--------------------------------------------------------------------------------------
 
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
 import logging
 
 from elisa_client_api.exception import *
 from elisa_client_api.elisa import Elisa
 from elisa_client_api.messageUpdate import MessageUpdate
-from elisa_client_api.scripts.elisa_utilhelper import *
+import elisa_utilhelper as euh
 
 
 __elisaUtilName__ = 'elisa_update'
-from elisa_client_api import __version__
-__author__ = 'Raul Murillo Garcia <rmurillo@cern.ch> & Pierre Lasorak <pierre.lasorak@cern.ch>'
+__version_info__ = ('0', '0', '1')
+__version__ = '.'.join(__version_info__)
+__author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
 
-def main():
+if __name__ == '__main__':
     # Command line arguments
     availableArgs = ['version', 'verbosity', 'server', 'sso',
                     'ldap', 'logbook', 'id', 'date', 'body', 'bodyFile',
                     'attachmentsSrc']
     mandatoryArgs = ['id']
-    parser, cmdlArgs = buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
+    parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableArgs, mandatoryArgs)
 
     if True == cmdlArgs.version:
         print('\n' + __elisaUtilName__ + ' ' +  __version__ + ' (' + __author__ + ')\n')
@@ -46,7 +50,7 @@ def main():
     # Configure the logging module
     logger = logging.getLogger('elisa_get_logger')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
-    logger.setLevel(getLoggingLevel(cmdlArgs.verbosity))
+    logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
 
     # Make sure at least one option is defined
     if not cmdlArgs.body and not cmdlArgs.attachmentsSrc and not cmdlArgs.bodyFile and not cmdlArgs.date:
@@ -64,10 +68,12 @@ def main():
             msgBody = f.read()
 
     logbook = cmdlArgs.logbook
+    if None == logbook:
+        logbook = "ATLAS"
 
     elisaArgs = dict()
-    elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL() + logbook + '/'
-    elisaArgs.update(parseCredentials(cmdlArgs))
+    elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL() + logbook + '/'
+    elisaArgs.update(euh.parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
 
     message = MessageUpdate(str(cmdlArgs.id))
@@ -82,5 +88,3 @@ def main():
         logger.error(str(ex))
 
 
-if __name__ == '__main__':
-    main()

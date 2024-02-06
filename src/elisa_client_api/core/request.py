@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
 # Title         : HTTP request
 # Project       : ATLAS, TDAQ, ELisA
@@ -18,6 +18,12 @@
 # 08/Jan/2012: add authentication
 #--------------------------------------------------------------------------------------
 
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
+import urllib.request, urllib.parse, urllib.error
 import requests
 import os
 import mimetypes
@@ -45,27 +51,23 @@ class Request(object):
         Returns: the data returned by the server.
         Throws: RestServerError if the request fails.
         """
-        headers = {
-            'Accept': 'application/xml'
-        }
-        self.__authentication.addAuthenticationToDict(headers)
+        req = urllib.request.Request(self.__url)
+        self.__authentication.addAuthentication(req)
+        req.add_header('Accept', 'application/xml')
+        req.get_method = lambda: 'GET'
 
         try:
-            response = requests.get(
-                self.__url,
-                headers = headers,
-                verify = False,
-            )
+            response = urllib.request.urlopen(req).read()
             self._checkSsoAuthen(response)
-            return response.content
-        except requests.exceptions.HTTPError as ex:
+            return response
+        except urllib.error.HTTPError as ex:
             # The returned code 302 is expected. The reason why is
             # explained in http://en.wikipedia.org/wiki/HTTP_302
-            # if ex.code == 302:
-            #     return ex.read()
+            if ex.code == 302:
+                return ex.read()
             # Otherwise it is a valid error, raise it.
             raise RestServerError(str(ex) + ". REST server error: " + ex.read().decode())
-        except requests.URLRequired as ex: #?
+        except urllib.error.URLError as ex:
             raise RestServerError(str(ex))
 
 
@@ -76,26 +78,19 @@ class Request(object):
         Returns: the data returned by the server.
         Throws: RestServerError if the request fails.
         """
-
-        headers = {
-            'Content-Type': 'application/xml',
-            'Accept': 'application/xml',
-        }
-
-        self.__authentication.addAuthenticationToDict(headers)
+        req = urllib.request.Request(self.__url,message)
+        self.__authentication.addAuthentication(req)
+        req.add_header('Content-Type', 'application/xml')
+        req.add_header('Accept', 'application/xml')
+        req.get_method = lambda: 'POST'
 
         try:
-            response = requests.post(
-                self.__url,
-                data = message,
-                headers = headers,
-                verify = False,
-            )
+            response = urllib.request.urlopen(req).read()
             self._checkSsoAuthen(response)
-            return response.content
-        except requests.exceptions.HTTPError as ex:
+            return response
+        except urllib.error.HTTPError as ex:
             raise RestServerError(str(ex) + ". REST server error: " + ex.read().decode())
-        except requests.exceptions.URLRequired as ex:
+        except urllib.error.URLError as ex:
             raise RestServerError(str(ex))
 
 
@@ -106,26 +101,19 @@ class Request(object):
         Returns: the data returned by the server.
         Throws: RestServerError if the request fails.
         """
-
-        headers = {
-            'Content-Type': 'application/xml',
-            'Accept': 'application/xml',
-        }
-
-        self.__authentication.addAuthenticationToDict(headers)
+        req = urllib.request.Request(self.__url,message)
+        self.__authentication.addAuthentication(req)
+        req.add_header('Content-Type', 'application/xml')
+        req.add_header('Accept', 'application/xml')
+        req.get_method = lambda: 'PUT'
 
         try:
-            response = requests.put(
-                self.__url,
-                data = message,
-                headers = headers,
-                verify = False,
-            )
+            response = urllib.request.urlopen(req).read()
             self._checkSsoAuthen(response)
-            return response.content
-        except requests.exceptions.HTTPError as ex:
+            return response
+        except urllib.error.HTTPError as ex:
             raise RestServerError(str(ex) + ". REST server error: " + ex.read().decode())
-        except requests.exceptions.URLRequired as ex:
+        except urllib.error.URLError as ex:
             raise RestServerError(str(ex))
 
 
@@ -146,6 +134,7 @@ class Request(object):
         count=0
         for attachment in attachments:
             files['file'+str(count)] = (os.path.basename(attachment), open(attachment, 'rb'), mimetypes.guess_type(attachment)[0] or 'application/octet-stream')
+            count+=1
         request = requests.Request('POST', self.__url, files=files)
         prepped = session.prepare_request(request)
         self.__authentication.addAuthenticationPy3(prepped)
@@ -158,7 +147,7 @@ class Request(object):
             return response.content
         except requests.exceptions.HTTPError as ex:
             raise RestServerError(str(ex) + ". REST server error: " + ex.read().decode())
-        #except urllib3.error.URLError as ex:
+        #except urllib.error.URLError as ex:
         #    raise RestServerError(str(ex))
 
     # -------------------
@@ -166,7 +155,6 @@ class Request(object):
     # -------------------
     def _checkSsoAuthen(self, response):
         # Is there a better way to detect this?
-        content = response.content.decode()
-        if '<!DOCTYPE html PUBLIC' in content and 'Sign in with your CERN account' in content:
-            raise RestServerError("SSO authentication failed")
+        if '<!DOCTYPE html PUBLIC' in response.decode() and 'Sign in with your CERN account' in response.decode():
+            raise RestServerError("SSO authentication failed");()
 

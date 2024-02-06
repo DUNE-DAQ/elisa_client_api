@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
 # Title         : Logbook message
 # Project       : ATLAS, TDAQ, ELisA
@@ -17,6 +17,11 @@
 # 05/Dec/2012: created.
 #--------------------------------------------------------------------------------------
 
+from __future__ import absolute_import
+from builtins import str
+from builtins import object
+import string
+
 from .messageField import SimpleField, AttachmentField, SystemsAffectedField, OptionField
 
 class Status(object):
@@ -28,7 +33,7 @@ class Status(object):
 
 class Message(object):
     """ Class with all the fields of a logbook message.
-    
+
     Accessors will be provided as needed in derived classes.
     """
     # ------------------
@@ -39,14 +44,14 @@ class Message(object):
         # - Private data attributes -
         # ---------------------------
 
-        #  The field name parameter is the same as those use in the ELisA server. 
-        #  This schema allows for generic code when serializing, deserializing 
+        #  The field name parameter is the same as those use in the ELisA server.
+        #  This schema allows for generic code when serializing, deserializing
         #  and printing the fields.
         self._id = SimpleField('id', id)
         self._logbook = SimpleField('logbook')
         self._username = SimpleField('username')
         self._author = SimpleField('author')
-        self._date = SimpleField('date')    
+        self._date = SimpleField('date')
         self._subject = SimpleField('subject')
         self._message_type = SimpleField('message_type')
         self._systems_affected = SystemsAffectedField('systems_affected')
@@ -61,27 +66,27 @@ class Message(object):
         self._thread_head = SimpleField('thread_head')
         self._valid = SimpleField('valid')
         self._encoding = SimpleField('encoding')
-        
- 
+
+
     def __str__(self):
         dump = ""
         fields = self.getFieldNames()
         for field in fields:
-            dump += str(getattr(self, field)) + '\n'    
+            dump += str(getattr(self, field)) + '\n'
         return dump
-        
-        
+
+
     def getFieldNames(self):
         return [attr for attr in dir(self) if getattr(self, attr).__class__.__name__ == "SimpleField" \
                                            or getattr(self, attr).__class__.__name__ == "AttachmentField" \
                                            or getattr(self, attr).__class__.__name__ == "OptionField" \
                                            or getattr(self, attr).__class__.__name__ == "SystemsAffectedField"]
-   
-   
+
+
     def getTag(self):
         return "_"
-    
-    
+
+
     # --------------------
     # - Property methods -
     # --------------------
@@ -94,37 +99,37 @@ class Message(object):
     def logbook(self):
         """ Message logbook field. """
         return self._logbook.value
-    
+
     @property
     def userName(self):
         """ Message user name field. """
         return self._username.value
-    
+
     @property
     def author(self):
         """ Message author field. """
         return self._author.value
-    
+
     @property
     def date(self):
         """ Message date field. """
         return self._date.value
-    
+
     @property
     def subject(self):
         """ Message subject field. """
         return self._subject.value
-        
+
     @property
     def type(self):
         """ Message type field. """
         return self._message_type.value
-    
+
     @property
     def options(self):
         """ Message options field. """
-        return self._options .value        
-        
+        return self._options .value
+
     @property
     def systemsAffected(self):
         """ Message systems affected field. """
@@ -139,45 +144,44 @@ class Message(object):
     def host(self):
         """ Message host field. """
         return self._host.value
-          
+
     @property
     def hasReplies(self):
         """ Message has replies field. """
         return self._has_replies.value
-    
+
     @property
     def replyTo(self):
         """ Message reply to field. """
         return self._reply_to.value
-  
+
     @property
     def hasAttachments(self):
         """ Message has attachments field. """
         return self._has_attachments.value
-    
+
     @property
     def attachments(self):
         """ Message attachments field. """
         return self._attachments.value
-    
+
     @property
     def status(self):
         """ Message status field. """
         return self._status.value
-    
+
     @property
     def threadHead(self):
         """ Message thread head field. """
         return self._thread_head.value
-    
+
     @property
     def valid(self):
         """ Message valid field. """
         return self._valid.value
-    
+
     @property
     def encoding(self):
         """ Message encoding field. """
         return self._encoding.value
 
-    

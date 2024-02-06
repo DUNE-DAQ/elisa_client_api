@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
 # Title         : ELisA REST server
 # Project       : ATLAS, TDAQ, ELisA
@@ -9,7 +9,7 @@
 # Revision      : 0 $
 #--------------------------------------------------------------------------------------
 # Class         : RestServer
-# Description   : Implements the Logbook interface to access the ELisA logbook backend 
+# Description   : Implements the Logbook interface to access the ELisA logbook backend
 #                 database through the REST server.
 #--------------------------------------------------------------------------------------
 # Copyright (c) 2012 by University of California, Irvine. All rights reserved.
@@ -20,9 +20,12 @@
 # 11/Feb/2013: add option to show attributes when searching for messages.
 #--------------------------------------------------------------------------------------
 
-import urllib.request
-import urllib.parse
-import urllib.error
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
+import urllib.request, urllib.parse, urllib.error
 import string
 import logging
 
@@ -42,11 +45,11 @@ class RestServer(object):
         self.__url = url
         self.__authentication = authentication
 
-            
+
     def getMessage(self, msgId):
-        """ Queries the REST server to retrieve the logbook message with 
+        """ Queries the REST server to retrieve the logbook message with
         the given ID.
-        
+
         msgId: the message ID.
         Returns: an object of type MessageRead encapsulating the message
                  with the given ID.
@@ -55,11 +58,11 @@ class RestServer(object):
         url = self.__url + "messages/" + str(msgId) + "/"
         msgXml = Request(url, self.__authentication).get()
         return Serializer().deserialize(msgXml)
-    
-    
+
+
     def getAttachment(self, msgId, attachId):
-        """ Queries the REST server to retrieve an attachment associated to 
-        a messages. 
+        """ Queries the REST server to retrieve an attachment associated to
+        a messages.
 
         msgId: message ID of the attachment to retrieve.
         attachId: the attachment ID.
@@ -70,11 +73,11 @@ class RestServer(object):
         url = self.__url + "messages/" + str(msgId) + "/attachments/" + str(attachId)
         req = Request(url, self.__authentication)
         return req.get()
-    
-    
+
+
     def getAttachments(self, message):
-        """ Queries the REST server to retrieve an attachment associated to 
-        a messages. 
+        """ Queries the REST server to retrieve an attachment associated to
+        a messages.
 
         message: object of type MessageRead with the attachments to retrieve.
         Returns: a list of tuples with the id, name and content of the attachments.
@@ -82,58 +85,58 @@ class RestServer(object):
         """
         attchsList = []
         for attachment in message.attachments:
-            attchsList.append((attachment[0], 
-                               attachment[1], 
+            attchsList.append((attachment[0],
+                               attachment[1],
                                self.getAttachment(message.id, attachment[0])))
-        
+
         return attchsList
-    
-    
+
+
     def searchMessages(self, criteria, showAttributes):
-        """ Queries the REST server to retrieve the messages based 
+        """ Queries the REST server to retrieve the messages based
         on a search criteria.
-            
-        criteria: object of type Criteria specifying the search 
+
+        criteria: object of type Criteria specifying the search
                   filter.
         showAttributes: if true, it also returns the option and attachment
                         message fields.
-        Returns: a list of objects of type MessageRead encapsulating 
+        Returns: a list of objects of type MessageRead encapsulating
                  the messages that meet the search criteria.
         Throws: RestServerError if accessing the logbook fails.
         """
-    
+
         url = self.__url + "messages?" + urllib.parse.urlencode(criteria.getDict())
         msgXml = Request(url, self.__authentication).get()
         return Serializer().deserialize(msgXml)
-            
-    
+
+
     def insertMessage(self, message):
-        """ Queries the REST server to insert a message into the logbook. 
-            
-        message: object of type MessageInsert to be inserted into the 
+        """ Queries the REST server to insert a message into the logbook.
+
+        message: object of type MessageInsert to be inserted into the
                  database.
         Returns: an object of type MessageRead encapsulating the message
                  inserted into the database.
-        Throws: RestServerError if inserting the text message fails (but not 
+        Throws: RestServerError if inserting the text message fails (but not
                 the attachments).
         """
         serializer = Serializer()
         msgInsertXml = serializer.serialize(message, "input_message")
         url = self.__url + "messages/"
-        
+
         # If attachments are present, send a multipart request.
         # Otherwise, send a POST request.
         if not message.attachments or len(message.attachments) == 0:
             msgReadXml = Request(url, self.__authentication).post(msgInsertXml)
         else:
             msgReadXml = Request(url, self.__authentication).multipart((msgInsertXml, 'message'), message.attachments)
-        
+
         return serializer.deserialize(msgReadXml)
-        
+
 
     def updateMessage(self, message):
         """ Queries the REST server to updates a logbook message.
-            
+
         message: object of type MessageUpdate to be updated into the
                  database.
         Returns: an object of type MessageRead encapsulating the message
@@ -141,13 +144,13 @@ class RestServer(object):
         Throws: RestServerError if updating the message fails.
                 FileError if any of the attachment cannot be opened.
         """
-            
+
         # If attachments and message is to be updated, send a multipart request.
         # If only the message is to be updated, send a PUT request.
         # If only an attachment is to be inserted, send a multipart to create attachment.
         if not message.body and not message.attachments and not message.date:
             return ""
-        
+
         msgReadXml = None
         serializer = Serializer()
         if message.body:
@@ -165,13 +168,13 @@ class RestServer(object):
         else:
             url = self.__url + 'messages/' + str(message.id) + '/attachments'
             msgReadXml = Request(url, self.__authentication).multipart(attachments=message.attachments)
-        
+
         return serializer.deserialize(msgReadXml)
-    
-    
+
+
     def replyToMessage(self, message):
         """ Queries the REST server to insert a reply.
-            
+
         message: object of type MessageReply to be inserted into the
                  database.
         Returns: an object of type MessageRead encapsulating the message
@@ -179,17 +182,17 @@ class RestServer(object):
         Throws: RestServerError if accessing the logbook fails.
         """
         from elisa_client_api.messageInsert import MessageInsert
-        
-        # The reply message must inherit from the original message the type, subject, 
+
+        # The reply message must inherit from the original message the type, subject,
         # and if need be, the options and systems affected.
         rootMsg = self.getMessage(message.id)
-       
+
         msgInsert = MessageInsert()
         msgInsert.author = message.author
         msgInsert.type = rootMsg.type
         msgInsert.systemsAffected = message.systemsAffected if message.systemsAffected else rootMsg.systemsAffected
         msgInsert.options = message.options if message.options else rootMsg.options
-        msgInsert.subject = ('RE: ' + rootMsg.subject)
+        msgInsert.subject = message.subject if message.subject else ('RE: ' + rootMsg.subject)
         msgInsert.body = message.body
         msgInsert.status = message.status
         msgInsert.attachments = message.attachments
@@ -211,8 +214,8 @@ class RestServer(object):
 
 
     def getMessageTypes(self):
-        """ Queries the REST server to retrieve the message types. 
-            
+        """ Queries the REST server to retrieve the message types.
+
         Returns: a list of message types.
         Throws: RestServerError if accessing the logbook fails.
         """
@@ -222,9 +225,9 @@ class RestServer(object):
 
 
     def getTypeOptions(self, msgType):
-        """ Queries the REST server to retrieve the options for 
-        a given message type. 
-            
+        """ Queries the REST server to retrieve the options for
+        a given message type.
+
         msgType: the message type.
         Returns: a list of message types.
         Throws: RestServerError if accessing the logbook fails.
@@ -238,34 +241,34 @@ class RestServer(object):
         except RestServerError as ex:
             # The returned code 404 indicates a missing resource. In this case
             # it means the type does not have any associated options.
-            # If this is the case, simply ignore the exception 
+            # If this is the case, simply ignore the exception
             if 'HTTP Error 404' not in ex.__str__():
                 raise ex
-        
+
         return retval
-    
-    
+
+
     def getSystemsAffected(self):
-        """ Queries the REST server to retrieve the possible systems 
-        affected. 
-            
+        """ Queries the REST server to retrieve the possible systems
+        affected.
+
         Returns: a list of possible systems affected.
         Throws: RestServerError if accessing the logbook fails.
-        
-        """ 
+
+        """
         url = self.__url + "sa"
         saXml = Request(url, self.__authentication).get()
         return Serializer().deserializeSystemsAffected(saXml)
-    
-    
+
+
     def getPredefinedSystemsAffected(self, msgType):
-        """ Queries the REST server to retrieve the predefined systems 
-        affected for a given message type. 
-            
+        """ Queries the REST server to retrieve the predefined systems
+        affected for a given message type.
+
         msgType: a message type.
         Returns: a list of predefined systems affected for a message type.
         Throws: RestServerError if accessing the logbook fails.
-        """ 
+        """
         url = self.__url + 'mt/' + urllib.parse.quote(msgType) + '/sa'
         retval = ""
         try:
@@ -274,10 +277,10 @@ class RestServer(object):
         except RestServerError as ex:
             # The returned code 404 indicates a missing resource. In this case
             # it means the type does not have any predefined systems affected.
-            # If this is the case, simply ignore the exception 
+            # If this is the case, simply ignore the exception
             if 'HTTP Error 404' not in ex.__str__():
                 raise ex
-        
+
         return retval
 
-           
+

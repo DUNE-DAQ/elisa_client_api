@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
 # Title         : Search criteria field
 # Project       : ATLAS, TDAQ, ELisA
@@ -17,6 +17,7 @@
 # 07/Dec/2012: created.
 #--------------------------------------------------------------------------------------
 
+from builtins import object
 class SearchField(object):
     """ Class providing functionality to define a search criteria field.
     """
@@ -29,17 +30,17 @@ class SearchField(object):
         # ---------------------------
         self.__name = name
         self.__value = value
-    
+
     def __str__(self):
         return '{0:19}: {1}'.format(self.name, self.value)
-        
+
     # --------------------
     # - Property methods -
     # --------------------
     @property
     def name(self):
         return self.__name
-        
+
     @property
     def value(self):
         return self.__value

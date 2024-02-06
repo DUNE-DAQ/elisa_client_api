@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env tdaq_python
 #--------------------------------------------------------------------------------------
 # Title         : Logbook message read
 # Project       : ATLAS, TDAQ, ELisA
@@ -17,6 +17,7 @@
 # 27/Nov/2012: created.
 #--------------------------------------------------------------------------------------
 
+from __future__ import absolute_import
 from elisa_client_api.core.message import Message
 
 
