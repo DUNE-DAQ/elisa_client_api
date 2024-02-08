@@ -19,25 +19,28 @@
 # 04/Dec/2012: use properties.
 #--------------------------------------------------------------------------------------
 
+from __future__ import absolute_import
+from builtins import str
+from builtins import object
 from elisa_client_api.core.searchField import SearchField
 
 
 class SearchCriteria(object):
     """ Class representing a search criteria.
-    
+
     This class provides all the fields required to form a search criteria
     to retrieve logbook messages from the ELisA database.
     """
     # ------------------
     # - Public methods -
     # ------------------
-    def __init__(self):                
+    def __init__(self):
         # -------------------
         # - Data attributes -
         # -------------------
-        #  The field name parameter is the same as those use in the ELisA server. 
-        #  This schema allows for generic code when serializing, deserializing 
-        #  and printing the fields. 
+        #  The field name parameter is the same as those use in the ELisA server.
+        #  This schema allows for generic code when serializing, deserializing
+        #  and printing the fields.
         self._limit = SearchField('limit')          # Number of entries returned (100 by default).
         self._page = SearchField('page')            # Page number for results pagination.
         self._userName = SearchField('userName')    # Filter results per user name.
@@ -51,16 +54,16 @@ class SearchCriteria(object):
         self._since = SearchField('from')           # Initial search date.
         self._until = SearchField('to')             # End search date.
         self._interval = SearchField('month_interval') # Month interval.
-    
-    
+
+
     def __str__(self):
         dump = ""
         fields = self._getFieldNames()
         for field in fields:
-            dump += str(getattr(self, field)) + '\n'        
+            dump += str(getattr(self, field)) + '\n'
         return dump
-    
-    
+
+
     def getDict(self):
         """ Returns a dictionary of fieldName:fieldValue
         """
@@ -70,7 +73,7 @@ class SearchCriteria(object):
             if attr.value != None:
                 params[attr.name] = str(attr.value)
         return params
-        
+
 
     # -------------------------
     # - Public helper methods -
@@ -82,7 +85,7 @@ class SearchCriteria(object):
     @limit.setter
     def limit(self, value):
         self._limit.value = value
-        
+
     @property
     def page(self):
         """ Page number for results pagination. """
@@ -90,7 +93,7 @@ class SearchCriteria(object):
     @page.setter
     def page(self, value):
         self._page.value = value
-    
+
     @property
     def userName(self):
         """ Filter results per user name. """
@@ -98,7 +101,7 @@ class SearchCriteria(object):
     @userName.setter
     def userName(self, value):
         self._userName.value = value
-        
+
     @property
     def author(self):
         """ Filter results per author. """
@@ -114,7 +117,7 @@ class SearchCriteria(object):
     @systemsAffected.setter
     def systemsAffected(self, value):
         self._systemsAffected.value = value
-        
+
     @property
     def type(self):
         """ Filter results per type. """
@@ -122,7 +125,7 @@ class SearchCriteria(object):
     @type.setter
     def type(self, value):
         self._type.value = value
-                
+
     @property
     def options(self):
         """ Filter results per options. """
@@ -130,7 +133,7 @@ class SearchCriteria(object):
     @options.setter
     def options(self, value):
         self._options.value = value
-                    
+
     @property
     def since(self):
         """ Initial search date. """
@@ -146,7 +149,7 @@ class SearchCriteria(object):
     @until.setter
     def until(self, value):
         self._until.value = value
-        
+
     @property
     def interval(self):
         """ Month interval. """
@@ -162,7 +165,7 @@ class SearchCriteria(object):
     @subject.setter
     def subject(self, value):
         self._subject.value = value
-        
+
     @property
     def status(self):
         """ Filter results per status. """
@@ -178,11 +181,11 @@ class SearchCriteria(object):
     @body.setter
     def body(self, value):
         self._body.value = value
-        
+
     # -------------------
     # - Private methods -
     # -------------------
     def _getFieldNames(self):
         return [attr for attr in dir(self) if getattr(self, attr).__class__.__name__ == "SearchField"]
-        
-        
+
+

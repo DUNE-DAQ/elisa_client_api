@@ -19,6 +19,8 @@
 # 11/Feb/2013: add option to show attributes when searching for messages.
 #--------------------------------------------------------------------------------------
 
+from __future__ import absolute_import
+from builtins import object
 from elisa_client_api.core.restServer import RestServer
 from elisa_client_api.core.authentication import Authentication
 
@@ -189,3 +191,4 @@ class Elisa(object):
     # - Private data attributes -
     # ---------------------------
     _server = None  # ELisA server.
+

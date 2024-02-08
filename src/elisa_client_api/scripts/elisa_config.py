@@ -17,23 +17,27 @@
 # 04/Feb/2013: created.
 #--------------------------------------------------------------------------------------
 
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
 import logging
 
 from elisa_client_api.exception import *
 from elisa_client_api.elisa import Elisa
-from elisa_client_api.scripts.elisa_utilhelper import *
+import elisa_client_api.scripts.elisa_utilhelper as euh
 
 
 __elisaUtilName__ = 'elisa_config'
-from elisa_client_api import __version__
-__author__ = 'Raul Murillo Garcia <rmurillo@cern.ch> & Pierre Lasorak <pierre.lasorak@cern.ch>'
+__version_info__ = ('1', '0', '0')
+__version__ = '.'.join(__version_info__)
+__author__ = 'Raul Murillo Garcia <rmurillo@cern.ch>'
 
-def main():
-    # Command line arguments
+
+def main():    # Command line arguments
     availableOpts = ['version', 'verbosity', 'server', 'sso',
                     'ldap', 'type']
     mandatoryArgs = []
-    parser, cmdlArgs = buildCommandLineArguments(__elisaUtilName__, availableOpts, mandatoryArgs)
+    parser, cmdlArgs = euh.buildCommandLineArguments(__elisaUtilName__, availableOpts, mandatoryArgs)
 
     if True == cmdlArgs.version:
         print('\n' + __elisaUtilName__ + ' ' +  __version__ + ' (' + __author__ + ')\n')
@@ -42,11 +46,11 @@ def main():
     # Configure the logging module
     logger = logging.getLogger('elisa_get_logger')
     logging.basicConfig(format='%(asctime)s %(funcName)s:%(levelno)s [%(levelname)s]: %(message)s')
-    logger.setLevel(getLoggingLevel(cmdlArgs.verbosity))
+    logger.setLevel(euh.getLoggingLevel(cmdlArgs.verbosity))
 
     elisaArgs = dict()
-    elisaArgs['connection'] = getElisaServer(cmdlArgs.server) + getElisaURL()
-    elisaArgs.update(parseCredentials(cmdlArgs))
+    elisaArgs['connection'] = euh.getElisaServer(cmdlArgs.server) + euh.getElisaURL()
+    elisaArgs.update(euh.parseCredentials(cmdlArgs))
     elisa = Elisa(**elisaArgs)
 
     try:
@@ -76,7 +80,3 @@ def main():
         print("\n")
     except ElisaError as ex:
         logger.error(str(ex))
-
-
-if __name__ == '__main__':
-    main()

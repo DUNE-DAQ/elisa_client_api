@@ -34,11 +34,9 @@ def parseCredentials(cmlArgs):
     # specified, check if the password is also defined.
     if None == cmlArgs.ldap:
         import getpass
-        print("Using SSO authentication!")
         username = getpass.getuser()
         password = getpass.getpass("Password for " + username + ": ")
     else:
-        print("Using LDAP authentication!")
         pos = cmlArgs.ldap.find(':')
         if pos != -1:
             username = cmlArgs.ldap[:pos]
@@ -60,7 +58,8 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
     usage = 'usage: ' + utilName + ' [options] args'
     parser = OptionParser(usage=usage,
                           epilog='In case of errors or bugs, please send an email to ' \
-                          '')
+                          'atlas-tdaq-cc-wg@cern.ch')
+
 
     for arg in cmlArgs:
         addOption = {
@@ -80,7 +79,10 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
                                                 type='string',
                                                 dest='server',
                                                 metavar='SERVER',
-                                                help='URL of the EliSA REST server (i.e. https://pc-atd-elisa.cern.ch).'),
+                                                default=getElisaServer(None),
+                                                help='URL of the EliSA REST server (i.e. ' \
+                                                'https://pc-atd-elisa.cern.ch). If not specified, the main' \
+                                                'EliSA server in P1 or GPN depending on user location.'),
             'sso': lambda: parser.add_option('-o', '--sso-credential',
                                                 type='string',
                                                 dest='sso',
@@ -95,10 +97,11 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
                                                 help='user credential in the form USERNAME:PASSWORD or USERNAME. If only ' \
                                                 'the username is provided, the password will be asked interactively.'),
             'logbook': lambda: parser.add_option('-k', '--logbook',
-                                                 type='string',
-                                                 dest='logbook',
-                                                 metavar='LOGBOOK',
-                                                 help='logbook name. If argument is not provided, this script won\'t work!'),
+                                                type='string',
+                                                dest='logbook',
+                                                metavar='LOGBOOK',
+                                                help='logbook name. If argument is not provided  ' \
+                                                'the default ATLAS value is used for the logbook.'),
             'id': lambda: parser.add_option('-i', '--id',
                                                 type='int',
                                                 dest='id',
@@ -109,7 +112,7 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
                                                 dest='username',
                                                 metavar='USER',
                                                 help='message user name'),
-	   'date': lambda: parser.add_option('-d', '--date',
+	        'date': lambda: parser.add_option('-d', '--date',
                                                 type='string',
                                                 dest='date',
                                                 metavar='DATE',
@@ -172,12 +175,12 @@ def buildCommandLineArguments(utilName, cmlArgs, mandatory):
                                                 type='string',
                                                 dest='since',
                                                 metavar='FROM',
-                                                help='initial date of the search. Format: DD/MM/YYYY HH:MM:ss.'),
+                                                help='initial date of the search. Format: DD-MON-YYYY'),
             'to': lambda: parser.add_option('-t', '--date-to',
                                                 type='string',
                                                 dest='to',
                                                 metavar='TO',
-                                                help='end date of the search. Format: DD/MM/YYYY HH:MM:ss.'),
+                                                help='end date of the search. Format: DD-MON-YYYY'),
             'interval': lambda: parser.add_option('-n', '--interval',
                                                 type='string',
                                                 dest='interval',
@@ -236,18 +239,21 @@ def getLoggingLevel(level):
 
 
 def getElisaServer(cmdlServer):
+    import os
 
-    if not cmdlServer:
-        raise RuntimeError("You need to specify a server")
-    else:
+    if None != cmdlServer:
         return cmdlServer
+    elif None != os.environ.get('TDAQ_SETUP_POINT1'):
+        return 'http://pc-atlas-www.cern.ch'
+    else:
+        return 'https://atlasop.cern.ch'
 
 def getElisaURL():
     import os
-    if os.environ.get('USE_ELISA_NOT_MERGED'):
-        return '/elisa.api/api/'
-
-    return '/elisa/api/'
+    if None != os.environ.get('USE_ELISA_MERGED'):
+        return '/elisa/api/'
+    else:
+        return '/elisa/api/'
 
 def parseOptions(options, parser):
     if not options:
@@ -266,7 +272,7 @@ def parseOptions(options, parser):
         # 'option=' results in len=2 and pair[1]="". Check also for this condition.
         if len(pair) != 2 or not pair[1]:
             parser.error('invalid value format of argument --options')
-            sys.exit()
+            exit()
         listOpts.append((pair[0].strip(), pair[1].strip()))
 
     # Sort the option name (including the inner name)
@@ -275,7 +281,7 @@ def parseOptions(options, parser):
 #    pp = pprint.PrettyPrinter(indent=2)
 #    pp.pprint(listOpts)
 
-    from elisa_client_api.optionsBuilder import OptionsBuilder
+    from optionsBuilder import OptionsBuilder
     obroot = OptionsBuilder()
 
     # Use a hash table with the option name as the key and the
@@ -293,3 +299,4 @@ def parseOptions(options, parser):
             dirOBs[name] = dirOBs[parts[0]].addOption(parts[1], value)
 
     return obroot.toList()
+

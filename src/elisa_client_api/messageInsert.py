@@ -17,6 +17,7 @@
 # 27/Nov/2012: created.
 #--------------------------------------------------------------------------------------
 
+from __future__ import absolute_import
 from elisa_client_api.messageReply import MessageReply
 from elisa_client_api.core.message import Message
 
@@ -26,8 +27,8 @@ class MessageInsert(MessageReply):
     """
 
     def __init__(self):
-        super(MessageInsert, self).__init__(None) 
-        
+        super(MessageInsert, self).__init__(None)
+
     # --------------------
     # - Property methods -
     # --------------------
