@@ -1,0 +1,31 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0"]
+
+[project]
+name = "elisa_client_api"
+description = "Enables sending of messages to the Elisa logbook"
+version = "1.0.0"
+readme = "docs/README.md"
+requires-python = ">=3.6"
+urls = { "homepage" = "https://github.com/DUNE-DAQ/elisa_client_api" }
+dependencies = [
+	     "lxml",
+	     "requests",
+	     ]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+elisa_client_api = ["*"]
+
+[project.scripts]
+elisa_config = "elisa_client_api.scripts.elisa_config:main"
+elisa_get = "elisa_client_api.scripts.elisa_get:main"
+elisa_insert = "elisa_client_api.scripts.elisa_insert:main"
+elisa_reply = "elisa_client_api.scripts.elisa_reply:main"
+elisa_update = "elisa_client_api.scripts.elisa_update:main"
